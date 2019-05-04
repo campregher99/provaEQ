@@ -200,6 +200,7 @@ public class Grafo {
 								archi.get(nodi.get(i).getIndiciArchi().get(f))
 										.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
 												- (Math.abs(ingressi - uscite) - v), false);
+								uscite = ingressi;
 								break;
 							} else {
 								// altrimenti massacra le uscite che non hanno abbastanza soldi per pagarsi
@@ -216,6 +217,7 @@ public class Grafo {
 								archi.get(nodi.get(i).getIndiciArchi().get(f))
 										.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
 												- (Math.abs(ingressi - uscite) - v), false);
+								uscite = ingressi;
 								break;
 							} else {
 								// altrimenti massacra le uscite che non hanno abbastanza soldi per pagarsi
@@ -226,45 +228,46 @@ public class Grafo {
 						}
 					}
 				}
-				// se le uscite non bastano scorro anche gli ingressi per ingrassarli
-				for (int f = i; f < nodi.size() - 2; f++) {
-					if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getNodo1().getColore()
-							.equals(nodi.get(i).getColore())) {
-						if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
-							if (v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() < Math
-									.abs(ingressi - uscite) - v) {
-								// se basta ne ingrassa solo uno
-								archi.get(nodi.get(i).getIndiciArchi().get(f))
-										.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
-												+ (Math.abs(ingressi - uscite) - v), true);
-								break;
-							} else {
-								// altrimenti inizia ad ingrassarne uno alla volta del tutto decrementando il
-								// debito
-								ingressi -= v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore();
-								archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(v, false);
+				if (uscite - ingressi != 0) {
+					// se le uscite non bastano scorro anche gli ingressi per ingrassarli
+					for (int f = i; f < nodi.size() - 2; f++) {
+						if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getNodo1().getColore()
+								.equals(nodi.get(i).getColore())) {
+							if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
+								if (v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() < Math
+										.abs(ingressi - uscite) - v) {
+									// se basta ne ingrassa solo uno
+									archi.get(nodi.get(i).getIndiciArchi().get(f))
+											.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
+													+ (Math.abs(ingressi - uscite) - v), true);
+									break;
+								} else {
+									// altrimenti inizia ad ingrassarne uno alla volta del tutto decrementando il
+									// debito
+									ingressi -= v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore();
+									archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(v, false);
+								}
+							}
+						} else {
+							if (!archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
+								if (v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() < Math
+										.abs(ingressi - uscite) - v) {
+									// se basta ne ingrassa solo uno
+									archi.get(nodi.get(i).getIndiciArchi().get(f))
+											.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
+													+ (Math.abs(ingressi - uscite) - v), true);
+									break;
+								} else {
+									// altrimenti inizia ad ingrassarne uno alla volta del tutto decrementando il
+									// debito
+									ingressi -= v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore();
+									archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(v, false);
+								}
 							}
 						}
-					} else {
-						if (!archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
-							if (v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() < Math
-									.abs(ingressi - uscite) - v) {
-								// se basta ne ingrassa solo uno
-								archi.get(nodi.get(i).getIndiciArchi().get(f))
-										.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
-												+ (Math.abs(ingressi - uscite) - v), true);
-								break;
-							} else {
-								// altrimenti inizia ad ingrassarne uno alla volta del tutto decrementando il
-								// debito
-								ingressi -= v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore();
-								archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(v, false);
-							}
-						}
+
 					}
-
 				}
-
 			} else if (ingressi > uscite) {
 				archi.get(nodi.get(i).getIndiciArchi().get(3)).setValore(v, false);
 				// scorro tutte le uscite per compensare
@@ -278,6 +281,7 @@ public class Grafo {
 								archi.get(nodi.get(i).getIndiciArchi().get(f))
 										.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
 												+ (Math.abs(ingressi - uscite) - v), false);
+								ingressi = uscite;
 								break;
 							} else {
 								// altrimenti aggiunge parte del debito degli ingressi
@@ -293,6 +297,7 @@ public class Grafo {
 								archi.get(nodi.get(i).getIndiciArchi().get(f))
 										.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
 												+ (Math.abs(ingressi - uscite) - v), false);
+								ingressi = uscite;
 								break;
 							} else {
 								// altrimenti aggiunge parte del debito degli ingressi
@@ -303,43 +308,44 @@ public class Grafo {
 					}
 
 				}
-				// se le uscite non bastano scorro anche gli ingressi per massacrarli
-				for (int f = i; f < nodi.size() - 2; f++) {
-					if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getNodo1().getColore()
-							.equals(nodi.get(i).getColore())) {
-						if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
-							if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() > Math.abs(ingressi - uscite)
-									- v) {
-								// se può massacra un solo ingresso
-								archi.get(nodi.get(i).getIndiciArchi().get(f))
-										.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
-												- (Math.abs(ingressi - uscite) - v), true);
-								break;
-							} else {
-								// altrimenti ne massacra un po' fino a che non è finito il debito
-								ingressi -= archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() - 1;
-								archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(1, false);
+				if (ingressi - uscite != 0) {
+					// se le uscite non bastano scorro anche gli ingressi per massacrarli
+					for (int f = i; f < nodi.size() - 2; f++) {
+						if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getNodo1().getColore()
+								.equals(nodi.get(i).getColore())) {
+							if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
+								if (archi.get(nodi.get(i).getIndiciArchi().get(f))
+										.getValore() > Math.abs(ingressi - uscite) - v) {
+									// se può massacra un solo ingresso
+									archi.get(nodi.get(i).getIndiciArchi().get(f))
+											.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
+													- (Math.abs(ingressi - uscite) - v), true);
+									break;
+								} else {
+									// altrimenti ne massacra un po' fino a che non è finito il debito
+									ingressi -= archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() - 1;
+									archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(1, false);
+								}
+							}
+						} else {
+							if (!archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
+								if (archi.get(nodi.get(i).getIndiciArchi().get(f))
+										.getValore() > Math.abs(ingressi - uscite) - v) {
+									// se può massacra un solo ingresso
+									archi.get(nodi.get(i).getIndiciArchi().get(f))
+											.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
+													- (Math.abs(ingressi - uscite) - v), true);
+									break;
+								} else {
+									// altrimenti ne massacra un po' fino a che non è finito il debito
+									ingressi -= archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() - 1;
+									archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(1, false);
+								}
 							}
 						}
-					} else {
-						if (!archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
-							if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() > Math.abs(ingressi - uscite)
-									- v) {
-								// se può massacra un solo ingresso
-								archi.get(nodi.get(i).getIndiciArchi().get(f))
-										.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
-												- (Math.abs(ingressi - uscite) - v), true);
-								break;
-							} else {
-								// altrimenti ne massacra un po' fino a che non è finito il debito
-								ingressi -= archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() - 1;
-								archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(1, false);
-							}
-						}
+
 					}
-
 				}
-
 			}
 
 			d++;
@@ -429,41 +435,42 @@ public class Grafo {
 						}
 
 					}
-					// se le uscite non bastano scorro anche gli ingressi per ingrassarli
-					for (int f = i; f < nodi.size() - 2; f++) {
-						if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getNodo1().getColore()
-								.equals(nodi.get(i).getColore())) {
-							if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
-								if (v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() < Math
-										.abs(ingressi - uscite) - v) {
-									archi.get(nodi.get(i).getIndiciArchi().get(f))
-											.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
-													+ (Math.abs(ingressi - uscite) - v), true);
-									isCreato = true;
-									break;
-								} else {
-									ingressi -= v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore();
-									archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(v, false);
+					if (!isCreato) {
+						// se le uscite non bastano scorro anche gli ingressi per ingrassarli
+						for (int f = i; f < nodi.size() - 2; f++) {
+							if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getNodo1().getColore()
+									.equals(nodi.get(i).getColore())) {
+								if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
+									if (v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() < Math
+											.abs(ingressi - uscite) - v) {
+										archi.get(nodi.get(i).getIndiciArchi().get(f))
+												.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
+														+ (Math.abs(ingressi - uscite) - v), true);
+										isCreato = true;
+										break;
+									} else {
+										ingressi -= v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore();
+										archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(v, false);
+									}
+								}
+							} else {
+								if (!archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
+									if (v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() < Math
+											.abs(ingressi - uscite) - v) {
+										archi.get(nodi.get(i).getIndiciArchi().get(f))
+												.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
+														+ (Math.abs(ingressi - uscite) - v), true);
+										isCreato = true;
+										break;
+									} else {
+										ingressi -= v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore();
+										archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(v, false);
+									}
 								}
 							}
-						} else {
-							if (!archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
-								if (v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() < Math
-										.abs(ingressi - uscite) - v) {
-									archi.get(nodi.get(i).getIndiciArchi().get(f))
-											.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
-													+ (Math.abs(ingressi - uscite) - v), true);
-									isCreato = true;
-									break;
-								} else {
-									ingressi -= v - archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore();
-									archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(v, false);
-								}
-							}
+
 						}
-
 					}
-
 				} else if (ingressi > uscite) {
 					// creazione ultimo arco del nodo
 					archi.get(nodi.get(i).getIndiciArchi().get(3)).setValore(v, false);
@@ -505,39 +512,41 @@ public class Grafo {
 						}
 
 					}
-					// se le uscite non bastano scorro anche gli ingressi per massacrarli
-					for (int f = i; f < nodi.size() - 2; f++) {
-						if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getNodo1().getColore()
-								.equals(nodi.get(i).getColore())) {
-							if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
-								if (archi.get(nodi.get(i).getIndiciArchi().get(f))
-										.getValore() > Math.abs(ingressi - uscite) - v) {
-									archi.get(nodi.get(i).getIndiciArchi().get(f))
-											.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
-													- (Math.abs(ingressi - uscite) - v), true);
-									isCreato = true;
-									break;
-								} else {
-									ingressi -= archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() - 1;
-									archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(1, false);
+					if (!isCreato) {
+						// se le uscite non bastano scorro anche gli ingressi per massacrarli
+						for (int f = i; f < nodi.size() - 2; f++) {
+							if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getNodo1().getColore()
+									.equals(nodi.get(i).getColore())) {
+								if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
+									if (archi.get(nodi.get(i).getIndiciArchi().get(f))
+											.getValore() > Math.abs(ingressi - uscite) - v) {
+										archi.get(nodi.get(i).getIndiciArchi().get(f))
+												.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
+														- (Math.abs(ingressi - uscite) - v), true);
+										isCreato = true;
+										break;
+									} else {
+										ingressi -= archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() - 1;
+										archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(1, false);
+									}
+								}
+							} else {
+								if (!archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
+									if (archi.get(nodi.get(i).getIndiciArchi().get(f))
+											.getValore() > Math.abs(ingressi - uscite) - v) {
+										archi.get(nodi.get(i).getIndiciArchi().get(f))
+												.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
+														- (Math.abs(ingressi - uscite) - v), true);
+										isCreato = true;
+										break;
+									} else {
+										ingressi -= archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() - 1;
+										archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(1, false);
+									}
 								}
 							}
-						} else {
-							if (!archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
-								if (archi.get(nodi.get(i).getIndiciArchi().get(f))
-										.getValore() > Math.abs(ingressi - uscite) - v) {
-									archi.get(nodi.get(i).getIndiciArchi().get(f))
-											.setValore(archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore()
-													- (Math.abs(ingressi - uscite) - v), true);
-									isCreato = true;
-									break;
-								} else {
-									ingressi -= archi.get(nodi.get(i).getIndiciArchi().get(f)).getValore() - 1;
-									archi.get(nodi.get(i).getIndiciArchi().get(f)).setValore(1, false);
-								}
-							}
-						}
 
+						}
 					}
 				}
 			} else {
@@ -545,7 +554,7 @@ public class Grafo {
 				uscite = 0;
 				ingressi = 0;
 				// calcolo ingressi e uscite totali
-				for (int f = 0; f < nodi.size() - 2; f++) {
+				for (int f = 0; f < nodi.size() - 1; f++) {
 					if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getNodo1().getColore()
 							.equals(nodi.get(i).getColore())) {
 						if (archi.get(nodi.get(i).getIndiciArchi().get(f)).getDirezione()) {
@@ -594,42 +603,22 @@ public class Grafo {
 					// nodo precedente
 				// fine bilanciamento del nodo attraverso l'arco del nodo precedente
 				if (ingressi < uscite) {
-					if (archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getNodo1().getColore()
-							.equals(nodi.get(i).getColore())) {
-						if (archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getDirezione()) {
-							if (archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getValore()
-									- (Math.abs(ingressi - uscite) - v) > 0) {
-								// se basta il valore dell'arco mantengo il suo verso e lo correggo
-								archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).setValore(
-										archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getValore()
-												- (Math.abs(ingressi - uscite) - v),
-										true);
-							} else {
-								// altrimenti gli cambio il verso
-								archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).setValore(
-										Math.abs(archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getValore()
-												- (Math.abs(ingressi - uscite) - v)),
-										false);
-							}
-						}
-					}else {
-						if (!archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getDirezione()) {
-							if (archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getValore()
-									- (Math.abs(ingressi - uscite) - v) > 0) {
-								// se basta il valore dell'arco mantengo il suo verso e lo correggo
-								archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1))
-										.setValore(archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getValore()
-												- (Math.abs(ingressi - uscite) - v), true);
-							} else {
-								// altrimenti gli cambio il verso
-								archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).setValore(
-										Math.abs(archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getValore()
-												- (Math.abs(ingressi - uscite) - v)),
-										false);
-							}
+					// controlla che sia un uscita o un entrata per il nodo in questione
+					if (archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getDirezione()) {
+						if (archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getValore()
+								- (Math.abs(ingressi - uscite) - v) > 0) {
+							// se basta il valore dell'arco mantengo il suo verso e lo correggo
+							archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1))
+									.setValore(archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getValore()
+											- (Math.abs(ingressi - uscite) - v), true);
+						} else {
+							// altrimenti gli cambio il verso
+							archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).setValore(
+									Math.abs(archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getValore()
+											- (Math.abs(ingressi - uscite) - v)),
+									false);
 						}
 					}
-
 				} else {
 					if (!archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getDirezione()) {
 						if (archi.get(nodi.get(i - r).getIndiciArchi().get(i - r - 1)).getValore()
@@ -749,7 +738,8 @@ public class Grafo {
 					}
 
 				}
-
+				if (uscite - ingressi == 0)
+					isCreato = true;
 			}
 			d++;
 		}
